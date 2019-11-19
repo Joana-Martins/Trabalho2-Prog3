@@ -6,6 +6,7 @@ class Docente{
     Date dataNascimento;
     Date dataIngresso;
     Boolean coordenador;
+    List<Publicacao> publicacoes = new ArrayList<Publicacao>();
 
     // Construtor
     public Docente(Long codigo, String nome, Date dataNascimento, Date dataIngresso, String coordenador){
@@ -33,6 +34,9 @@ class Docente{
         if(coordenador.equals("X")) this.coordenador = true;
         else this.coordenador = false;
     }
+    public void set_publicacoes(Publicacao publicacao){
+        this.publicacoes.add(publicacao);
+    }
 
     // Gets
     public Long get_codigo(){
@@ -49,5 +53,8 @@ class Docente{
     }
     public Boolean get_coordenador(){
         return this.coordenador;
+    }
+    public List<Publicacao> get_publicacao(){
+        return this.publicacoes;
     }
 }

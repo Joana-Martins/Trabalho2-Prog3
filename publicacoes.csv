@@ -20,7 +20,7 @@ Ano;Veículo;Título;Autores;Número;Volume;Local;Página Inicial;Página Final
 2016;SBQS;Semantic Documentation in Project Management. In: XV Simpósio Brasileiro de Qualidade de Software;8826584877205264,9264617752964635;15;;Maceió;451;466
 2016;SBQS;Measures Suitable for SPC: A Systematic Mapping;8826584877205264;15;;Maceió;166;180
 2016;EKAW;SEON: A Software Engineering Ontology Network;9264617752964635,8826584877205264,5297252436860003;20;;Bologna;527;542
-2016;ONTOBRAS ;Process Integration in Semantic Enterprise Application Integration: a Systematic Mapping;8826584877205264,9264617752964635 ;5;;Curitiba;1;12
+2016;ONTOBRAS ;Process Integration in Semantic Enterprise Application Integration: a Systematic Mapping;8826584877205264,9264617752964635;5;;Curitiba;1;12
 2016;SEAMS;Model predictive control for software systems with CobRA;2762374760685577;11;;Austin;35;46
 2016;Webmedia;A Framework-based Approach for the Integration of Web-based Information Systems on the Semantic Web;2762374760685577;22;;Teresina;231;238
 2015;CAISE;We need to Discuss the Relationship: Revisiting Relationships as Modeling Constructs;5297252436860003;27;;Estocolmo;279;294
@@ -48,13 +48,13 @@ Ano;Veículo;Título;Autores;Número;Volume;Local;Página Inicial;Página Final
 2015;CAISE;Aligning Enterprise Architecture with Strategic Planning;4332944687727590;27;;Estocolmo;426;437
 2015;iSys;Tools Integration for Supporting Software Measurement: A Systematic Literature Review;8826584877205264,9264617752964635;4;8;;80;108
 2015;ICEIS;Metrics to Support IT Service Maturity Models: A Systematic Mapping;8826584877205264;17;;Barcelona;330;337
-2015;SEKE;Integration of Software Measurement Supporting Tools: A Mapping Study;8826584877205264,9264617752964635 ;27;;Pittsburgh;516;521
+2015;SEKE;Integration of Software Measurement Supporting Tools: A Mapping Study;8826584877205264,9264617752964635;27;;Pittsburgh;516;521
 2015;WTDQS;Um Método para Seleção de Indicadores de Serviços de TI;8826584877205264;13;;Manaus;1;10
-2015;ONTOBRAS ;Exploring Ontologies for Semantic Documentation in Project Management;8826584877205264,9264617752964635 ;4;;São Paulo;1;12
+2015;ONTOBRAS ;Exploring Ontologies for Semantic Documentation in Project Management;8826584877205264,9264617752964635;4;;São Paulo;1;12
 2015;PROFES;SINIS: A Method to Select Indicators for IT Services;8826584877205264;16;;Bolzano;68;86
 2015;AO; An ontology of online user feedback in software engineering;1688136556728644;3;10;;297;330
 2015;ER;A Method to Align Goals and Business Processes;1688136556728644;34;;Estocolmo;79;83
-2015;SEAA;Using the Findings of a Mapping Study to Conduct a Research Project: A Case in Knowledge Management in Software Testing;9264617752964635 ;41;;Madeira;208;215
+2015;SEAA;Using the Findings of a Mapping Study to Conduct a Research Project: A Case in Knowledge Management in Software Testing;9264617752964635;41;;Madeira;208;215
 2015;ER;Capturing Variability in Adaptation Spaces: A Three-Peaks Approach;2762374760685577;34;;Estocolmo;384;398
 2015;Webmedia;A Model-Driven Approach for the Design of Web Information Systems based on Frameworks;2762374760685577;21;;Manaus;41;48
 2017;RBIE;iMap & CMPaaS - De Ferramenta à Plataforma de Serviços para Mapas Conceituais;5454484334693909,9575037824966283;3;24;;125;143

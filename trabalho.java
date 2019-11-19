@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 class trabalho{
     List<Docente> docentes = new ArrayList<Docente>();
     List<Veiculo> veiculos = new ArrayList<Veiculo>();
+    List<Publicacao> publicacoes = new ArrayList<Publicacao>();
 
     public trabalho(){}
 
@@ -34,17 +35,18 @@ class trabalho{
             String sigla = scanner.next();
             String nome = scanner.next();
             String tipo = scanner.next();
+            Float impacto = scanner.nextFloat();
+
             if(tipo.equals("P")){
-                Float impacto = scanner.nextFloat();
                 String ISSN = scanner.next();
                 Periodico periodico = new Periodico(sigla, nome, tipo, impacto, ISSN);
                 this.veiculos.add(periodico);
             }
             if(tipo.equals("C")){
-                int numero = scanner.nextInt();
-                Conferencia conferencia = new Conferencia(sigla, nome, tipo, numero);
+                Conferencia conferencia = new Conferencia(sigla, nome, tipo, impacto);
                 this.veiculos.add(conferencia);
             }
+
             if(scanner.hasNextLine()) scanner.nextLine();
             else break;
         }
@@ -57,16 +59,87 @@ class trabalho{
         while(scanner.hasNext()){
             scanner.useDelimiter(";|\n");
             int ano = scanner.nextInt();
-            String veiculo = scanner.next();
+            String veiculo_ = scanner.next();
             String titulo = scanner.next();
-            String autores = scanner.next();
+            String[] docentes_ = scanner.next().split(",");                 
             int numero = scanner.nextInt();
-            String volume = scanner.next();
+            String volume_ = scanner.next();
             String local = scanner.next();
             int paginaInicial = scanner.nextInt();
-            int paginaFinal = scanner.nextInt();          
+            int paginaFinal = scanner.nextInt();
+            
+            List<Docente> docentes = new ArrayList<Docente>();
+            for(String autor:docentes_){
+                for(Docente docente:this.docentes){
+                    if(String.valueOf(docente.get_codigo()).equals(autor)) docentes.add(docente);
+                }
+            }
+
+            Publicacao publicacao = null;
+            for(Veiculo v:this.veiculos){
+                if(v.get_sigla().equals(veiculo_)){
+                    if(v.tipo.equals("P")){
+                        int volume = Integer.parseInt(volume_);
+                        Periodico periodico = (Periodico)v;
+                        periodico.set_volume(volume);
+                        publicacao = new Publicacao(ano, periodico, titulo, docentes, numero, paginaInicial, paginaFinal);
+                    }
+                    if(v.get_tipo().equals("C")){
+                        Conferencia conferencia = (Conferencia)v;
+                        conferencia.set_locais(local);
+                        conferencia.set_numeros(numero);
+                        publicacao = new Publicacao(ano, conferencia, titulo, docentes, numero, paginaInicial, paginaFinal);
+                    }
+                }
+            }
+
+            for(Docente d:docentes) d.set_publicacoes(publicacao);
+            if(this.publicacoes.isEmpty()) this.publicacoes.add(publicacao);
+            else{
+                int contagem = 0;
+                for(Publicacao p:this.publicacoes){
+                    if(p.get_numero()!=numero) contagem++;
+                }
+                if(contagem==this.publicacoes.size()) this.publicacoes.add(publicacao);
+            }
+            if(scanner.hasNextLine()) scanner.nextLine();
+            else break;
         }
         scanner.close();
+    }
+
+	void imprimeArquivoDocentes(FileWriter docentes) throws Exception{
+        FileWriter fr = null;
+        BufferedWriter bufferWriter = new BufferedWriter(docentes);
+        for(Docente docente:this.docentes){
+            bufferWriter.append(docente.get_codigo()+";");
+            bufferWriter.append(docente.get_nome()+";");
+            bufferWriter.append(docente.get_dataNascimento()+";");
+            bufferWriter.append(docente.get_dataIngresso()+";");
+            for(Publicacao publicacao:docente.publicacoes){
+                bufferWriter.append(publicacao.get_titulo()+",");
+            }
+            bufferWriter.append(";");
+            bufferWriter.append(docente.get_coordenador()+"\n");
+        }
+        bufferWriter.close();
+    }
+
+    void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
+        FileWriter fr = null;
+        BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
+        for(Publicacao publicacao:this.publicacoes){
+            bufferWriter.append(publicacao.get_ano()+";");
+            bufferWriter.append(publicacao.get_veiculo().get_sigla()+";");
+            bufferWriter.append(publicacao.get_veiculo().get_nome()+";");
+            bufferWriter.append(publicacao.get_veiculo().get_impacto()+";");
+            bufferWriter.append(publicacao.get_titulo()+";");
+            for(Docente docente:publicacao.autores){
+                bufferWriter.append(docente.get_nome()+",");
+            }
+            bufferWriter.append("\n");
+        }
+        bufferWriter.close();
     }
 
     public static void main(String argv[]) throws Exception {
@@ -91,5 +164,9 @@ class trabalho{
             //if(argv[i].equals("-r")==true){
             //    File regras = new File("regras.csv");
         }
+        FileWriter docentes = new FileWriter("docentes.txt");
+        FileWriter publicacoes = new FileWriter("publicacoes.txt");
+        t.imprimeArquivoDocentes(docentes);
+        t.imprimeArquivoPublicacoes(publicacoes);
     }
 }

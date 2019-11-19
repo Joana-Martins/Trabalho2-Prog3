@@ -2,12 +2,14 @@ class Veiculo{
     String sigla;
     String nome;
     String tipo;
+    float impacto;
 
     // Construtor
-    public Veiculo(String sigla, String nome, String tipo){
+    public Veiculo(String sigla, String nome, String tipo, float impacto){
         this.set_sigla(sigla);
         this.set_nome(nome);
         this.set_tipo(tipo);
+        this.set_impacto(impacto);
     }
 
     // Sets
@@ -20,6 +22,9 @@ class Veiculo{
     public void set_tipo(String tipo){
         this.tipo = tipo;
     }
+    public void set_impacto(float impacto){
+        this.impacto = impacto;
+    }
 
     // Gets
     public String get_sigla(){
@@ -30,5 +35,8 @@ class Veiculo{
     }
     public String get_tipo(){
         return this.tipo;
+    }
+    public float get_impacto(){
+        return this.impacto;
     }
 }
