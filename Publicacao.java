@@ -8,6 +8,7 @@ class Publicacao{
     int numero;
     int paginaInicial;
     int paginaFinal;
+    float pontuacao;
 
     // Construtor
     public Publicacao(int ano, Veiculo veiculo, String titulo, List<Docente> docentes, int numero, int paginaInicial, int paginaFinal){

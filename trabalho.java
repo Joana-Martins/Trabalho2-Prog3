@@ -6,6 +6,8 @@ class trabalho{
     List<Docente> docentes = new ArrayList<Docente>();
     List<Veiculo> veiculos = new ArrayList<Veiculo>();
     List<Publicacao> publicacoes = new ArrayList<Publicacao>();
+    Regra regra;
+    List<Qualis> qualis = new ArrayList<Qualis>();
 
     public trabalho(){}
 
@@ -108,7 +110,45 @@ class trabalho{
         scanner.close();
     }
 
-	void imprimeArquivoDocentes(FileWriter docentes) throws Exception{
+    public void carregaArquivosQualis(File qualis) throws Exception{
+        Scanner scanner = new Scanner(qualis, "UTF-8");
+        scanner.nextLine();
+        while(scanner.hasNext()){
+            int ano = scanner.nextInt();
+            String veiculo = scanner.next();
+            String nota = scanner.next();
+            Qualis qualis_ = new Qualis(ano, nota);
+            this.qualis.add(qualis_);
+            for(Veiculo v:this.veiculos){
+                if(v.get_sigla().equals(veiculo)) v.set_qualis(qualis_);
+            }
+        }
+    }
+
+    public void carregaArquivoRegras(File regras) throws Exception{
+        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
+        Scanner scanner = new Scanner(regras, "UTF-8");
+        scanner.nextLine();
+        while(scanner.hasNext()){
+            scanner.useDelimiter(";|\n");
+            Date inicioVigencia = formato.parse(scanner.next());
+            Date fimVigencia = formato.parse(scanner.next());
+            String[] qualis_ = scanner.next().split(",");
+            String[] pontos = scanner.next().split(",");      
+            Float multiplicador = scanner.nextFloat();
+            int anos = scanner.nextInt();
+            Float minimoPontos = scanner.nextFloat();
+            List<Qualis> qualis = this.qualis;
+            for(Qualis q:qualis){
+                this.regra.calcula_pontuacao(qualis_,pontos,q);
+                System.out.println(q.get_pontuacao());
+            }
+            Regra regra = new Regra(inicioVigencia, fimVigencia, qualis, multiplicador, anos, minimoPontos);
+            this.regra = regra;
+        }
+    }
+
+	public void imprimeArquivoDocentes(FileWriter docentes) throws Exception{
         FileWriter fr = null;
         BufferedWriter bufferWriter = new BufferedWriter(docentes);
         for(Docente docente:this.docentes){
@@ -125,7 +165,7 @@ class trabalho{
         bufferWriter.close();
     }
 
-    void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
+    public void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
         FileWriter fr = null;
         BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
         for(Publicacao publicacao:this.publicacoes){
@@ -166,8 +206,10 @@ class trabalho{
             //if(argv[i].equals("-q")==true){
             //    File qualis = new File("qualis.csv");
             //}
-            //if(argv[i].equals("-r")==true){
-            //    File regras = new File("regras.csv");
+            if(argv[i].equals("-r")==true){
+                File regras = new File("regras.csv");
+                t.carregaArquivoRegras(regras);
+            }
         }
         for(Publicacao p:t.publicacoes) System.out.println(p.get_titulo());
         FileWriter docentes = new FileWriter("docentes.txt");

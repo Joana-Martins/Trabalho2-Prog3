@@ -3,6 +3,7 @@ class Veiculo{
     String nome;
     String tipo;
     float impacto;
+    Qualis qualis;
 
     // Construtor
     public Veiculo(String sigla, String nome, String tipo, float impacto){
@@ -25,6 +26,9 @@ class Veiculo{
     public void set_impacto(float impacto){
         this.impacto = impacto;
     }
+    public void set_qualis(Qualis qualis){
+        this.qualis = qualis;
+    }
 
     // Gets
     public String get_sigla(){
@@ -38,5 +42,8 @@ class Veiculo{
     }
     public float get_impacto(){
         return this.impacto;
+    }
+    public Qualis get_qualis(){
+        return this.qualis;
     }
 }
