@@ -1,0 +1,4 @@
+class Qualis{
+    int ano;
+    
+}

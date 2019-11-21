@@ -98,7 +98,7 @@ class trabalho{
             else{
                 int contagem = 0;
                 for(Publicacao p:this.publicacoes){
-                    if(p.get_numero()!=numero) contagem++;
+                    if(p.get_titulo()!=titulo) contagem++;
                 }
                 if(contagem==this.publicacoes.size()) this.publicacoes.add(publicacao);
             }
@@ -134,8 +134,13 @@ class trabalho{
             bufferWriter.append(publicacao.get_veiculo().get_nome()+";");
             bufferWriter.append(publicacao.get_veiculo().get_impacto()+";");
             bufferWriter.append(publicacao.get_titulo()+";");
+            int contagem = 1;
             for(Docente docente:publicacao.autores){
-                bufferWriter.append(docente.get_nome()+",");
+                bufferWriter.append(docente.get_nome());
+                if(publicacao.autores.size() - contagem != 0){
+                    bufferWriter.append(",");
+                    contagem++;
+                }
             }
             bufferWriter.append("\n");
         }
@@ -164,6 +169,7 @@ class trabalho{
             //if(argv[i].equals("-r")==true){
             //    File regras = new File("regras.csv");
         }
+        for(Publicacao p:t.publicacoes) System.out.println(p.get_titulo());
         FileWriter docentes = new FileWriter("docentes.txt");
         FileWriter publicacoes = new FileWriter("publicacoes.txt");
         t.imprimeArquivoDocentes(docentes);
