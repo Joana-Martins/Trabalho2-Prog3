@@ -1,7 +1,7 @@
 class Qualis{
     int ano;
     String nota;
-    int pontuacao;
+    Float pontuacao;
 
     // Construtor
     public Qualis(int ano, String nota){
@@ -16,7 +16,7 @@ class Qualis{
     public void set_nota(String nota){
         this.nota = nota;
     }
-    public void set_pontuacao(int pontuacao){
+    public void set_pontuacao(Float pontuacao){
         this.pontuacao = pontuacao;
     }
 
@@ -27,7 +27,19 @@ class Qualis{
     public String get_nota(){
         return this.nota;
     }
-    public int get_pontuacao(){
+    public Float get_pontuacao(){
         return this.pontuacao;
+    }
+
+    public void calcula_pontuacao(Regra regra){     
+        int contador = 0;
+        while(contador<regra.notas.length-1){
+            if(this.get_nota().compareTo(regra.notas[contador])>=0 && this.get_nota().compareTo(regra.notas[contador+1])<0){
+                this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+                break;
+            }
+            contador++;
+        }
+        if(contador==regra.notas.length-1) this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
     }
 }

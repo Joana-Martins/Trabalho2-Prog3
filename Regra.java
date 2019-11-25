@@ -3,16 +3,18 @@ import java.util.*;
 class Regra{
     Date inicioVigencia;
     Date fimVigencia;
-    List<Qualis> qualis = new ArrayList<Qualis>();
-    float multiplicador;
+    String[] notas;
+    String[] pontos;
+    Float multiplicador;
     int anos;
     float minimoPontos;
 
     // Construtor
-    public Regra(Date inicioVigencia, Date fimVigencia, List<Qualis> qualis, float multiplicador, int anos, float minimoPontos){
+    public Regra(Date inicioVigencia, Date fimVigencia, String[] notas, String[] pontos, Float multiplicador, int anos, float minimoPontos){
         this.set_inicioVigencia(inicioVigencia);
         this.set_fimVigencia(fimVigencia);
-        this.set_qualis(qualis);
+        this.set_notas(notas);
+        this.set_pontos(pontos);
         this.set_multiplicador(multiplicador);
         this.set_anos(anos);
         this.set_minimoPontos(minimoPontos);
@@ -25,10 +27,13 @@ class Regra{
     public void set_fimVigencia(Date fimVigencia){
         this.fimVigencia = fimVigencia;
     }
-    public void set_qualis(List<Qualis> qualis){
-        this.qualis = qualis;
+    public void set_notas(String[] notas){
+        this.notas = notas;
     }
-    public void set_multiplicador(float multiplicador){
+    public void set_pontos(String[] pontos){
+        this.pontos = pontos;
+    }
+    public void set_multiplicador(Float multiplicador){
         this.multiplicador = multiplicador;
     }
     public void set_anos(int anos){
@@ -45,10 +50,13 @@ class Regra{
     public Date get_fimVigencia(){
         return this.fimVigencia;
     }
-    public List<Qualis> get_qualis(){
-        return this.qualis;
+    public String[] get_notas(){
+        return this.notas;
     }
-    public float get_multiplicador(){
+    public String[] get_pontos(){
+        return this.pontos;
+    }
+    public Float get_multiplicador(){
         return this.multiplicador;
     }
     public int get_anos(){
@@ -56,13 +64,5 @@ class Regra{
     }
     public float get_minimoPontos(){
         return this.minimoPontos;
-    }
-
-    public void calcula_pontuacao(String[] notas, String[] pontos, Qualis q){     
-        int contador = 0;
-        if(q.get_nota()>=notas[contador] && q.get_nota()<notas[contador+1]){
-            q.set_pontuacao(Integer.parseInt(pontos[contador])*this.multiplicador);
-        }
-        else contador++;
     }
 }

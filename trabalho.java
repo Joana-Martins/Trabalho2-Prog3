@@ -114,14 +114,18 @@ class trabalho{
         Scanner scanner = new Scanner(qualis, "UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
+            scanner.useDelimiter(";|\n");
             int ano = scanner.nextInt();
             String veiculo = scanner.next();
             String nota = scanner.next();
-            Qualis qualis_ = new Qualis(ano, nota);
-            this.qualis.add(qualis_);
+            Qualis q = new Qualis(ano, nota);
+            q.calcula_pontuacao(this.regra);
+            this.qualis.add(q);
             for(Veiculo v:this.veiculos){
-                if(v.get_sigla().equals(veiculo)) v.set_qualis(qualis_);
+                if(v.get_sigla().equals(veiculo)) v.set_qualis(q);
             }
+            if(scanner.hasNextLine()) scanner.nextLine();
+            else break;
         }
     }
 
@@ -133,18 +137,15 @@ class trabalho{
             scanner.useDelimiter(";|\n");
             Date inicioVigencia = formato.parse(scanner.next());
             Date fimVigencia = formato.parse(scanner.next());
-            String[] qualis_ = scanner.next().split(",");
+            String[] notas = scanner.next().split(",");
             String[] pontos = scanner.next().split(",");      
             Float multiplicador = scanner.nextFloat();
             int anos = scanner.nextInt();
             Float minimoPontos = scanner.nextFloat();
-            List<Qualis> qualis = this.qualis;
-            for(Qualis q:qualis){
-                this.regra.calcula_pontuacao(qualis_,pontos,q);
-                System.out.println(q.get_pontuacao());
-            }
-            Regra regra = new Regra(inicioVigencia, fimVigencia, qualis, multiplicador, anos, minimoPontos);
+            Regra regra = new Regra(inicioVigencia, fimVigencia, notas, pontos, multiplicador, anos, minimoPontos);
             this.regra = regra;
+            if(scanner.hasNextLine()) scanner.nextLine();
+            else break;
         }
     }
 
@@ -166,12 +167,14 @@ class trabalho{
     }
 
     public void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
+        this.publicacoes.sort(publicacao);
         FileWriter fr = null;
         BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
         for(Publicacao publicacao:this.publicacoes){
             bufferWriter.append(publicacao.get_ano()+";");
             bufferWriter.append(publicacao.get_veiculo().get_sigla()+";");
             bufferWriter.append(publicacao.get_veiculo().get_nome()+";");
+            bufferWriter.append(publicacao.get_veiculo().get_qualis().get_nota()+";");
             bufferWriter.append(publicacao.get_veiculo().get_impacto()+";");
             bufferWriter.append(publicacao.get_titulo()+";");
             int contagem = 1;
@@ -187,34 +190,46 @@ class trabalho{
         bufferWriter.close();
     }
 
+    Comparator<Publicacao> publicacao = new Comparator<Publicacao>(){
+        public int compare(Publicacao p1, Publicacao p2){
+            if(Integer.compare(p1.get_ano(), p2.get_ano())==0){
+                if(p1.get_veiculo().compare(p2.get_veiculo())==0){
+                    return p1.get_titulo().compareTo(p2.get_titulo());
+                }
+                return p1.get_veiculo().compare(p2.get_veiculo());
+            }
+            return Integer.compare(p2.get_ano(), p1.get_ano());
+        }
+    };
+
     public static void main(String argv[]) throws Exception {
         trabalho t = new trabalho();
 
         for(int i=0;i<argv.length;i++){
-            if(argv[i].equals("-d")==true){
+            if(argv[i].equals("-d")){
                 File docentes = new File("docentes.csv");
                 t.carregaArquivoDocentes(docentes);
             }
-            if(argv[i].equals("-v")==true){
+            if(argv[i].equals("-v")){
                 File veiculos = new File("veiculos.csv");
                 t.carregaArquivoVeiculos(veiculos);
             }
-            if(argv[i].equals("-p")==true){
+            if(argv[i].equals("-p")){
                 File publicacoes = new File("publicacoes.csv");
                 t.carregaArquivoPublicacoes(publicacoes);
             }
-            //if(argv[i].equals("-q")==true){
-            //    File qualis = new File("qualis.csv");
-            //}
-            if(argv[i].equals("-r")==true){
+            if(argv[i].equals("-q")){
+                File qualis = new File("qualis.csv");
+                t.carregaArquivosQualis(qualis);
+            }
+            if(argv[i].equals("-r")){
                 File regras = new File("regras.csv");
                 t.carregaArquivoRegras(regras);
             }
         }
-        for(Publicacao p:t.publicacoes) System.out.println(p.get_titulo());
-        FileWriter docentes = new FileWriter("docentes.txt");
+        //FileWriter docentes = new FileWriter("docentes.txt");
         FileWriter publicacoes = new FileWriter("publicacoes.txt");
-        t.imprimeArquivoDocentes(docentes);
+        //t.imprimeArquivoDocentes(docentes);
         t.imprimeArquivoPublicacoes(publicacoes);
     }
 }
