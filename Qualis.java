@@ -31,15 +31,18 @@ class Qualis{
         return this.pontuacao;
     }
 
-    public void calcula_pontuacao(Regra regra){     
-        int contador = 0;
-        while(contador<regra.notas.length-1){
-            if(this.get_nota().compareTo(regra.notas[contador])>=0 && this.get_nota().compareTo(regra.notas[contador+1])<0){
-                this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
-                break;
+    public void calcula_pontuacao(Regra regra, int ano){     
+        //if(this.get_ano() >= ano - regra.get_anos()){
+            int contador = 0;
+            while(contador<regra.notas.length-1){
+                if(this.get_nota().compareTo(regra.notas[contador])>=0 && this.get_nota().compareTo(regra.notas[contador+1])<0){
+                    this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+                    break;
+                }
+                contador++;
             }
-            contador++;
-        }
-        if(contador==regra.notas.length-1) this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+            if(contador==regra.notas.length-1) this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+        //}
+        //else this.set_pontuacao(Float.parseFloat("0"));
     }
 }

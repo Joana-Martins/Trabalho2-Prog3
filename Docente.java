@@ -7,6 +7,7 @@ class Docente{
     Date dataIngresso;
     Boolean coordenador;
     List<Publicacao> publicacoes = new ArrayList<Publicacao>();
+    Float pontuacao = 0f;
 
     // Construtor
     public Docente(Long codigo, String nome, Date dataNascimento, Date dataIngresso, String coordenador){
@@ -56,5 +57,12 @@ class Docente{
     }
     public List<Publicacao> get_publicacao(){
         return this.publicacoes;
+    }
+
+    public void calcula_pontuacao(){
+        for(Publicacao p:this.publicacoes){
+            this.pontuacao += p.get_veiculo().get_qualis().get_pontuacao();
+        }
+        System.out.print(this.pontuacao+"\n");
     }
 }
