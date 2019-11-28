@@ -1,8 +1,10 @@
+import java.io.Serializable;
 import java.util.*;
 
-class Conferencia extends Veiculo{
+class Conferencia extends Veiculo implements Serializable{
     List<Integer> numeros = new ArrayList<Integer>();
     List<String> locais = new ArrayList<String>();
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Conferencia(String sigla, String nome, String tipo, float impacto){

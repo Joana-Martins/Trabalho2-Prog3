@@ -1,6 +1,9 @@
-class Periodico extends Veiculo{
+import java.io.Serializable;
+
+class Periodico extends Veiculo implements Serializable{
     String ISSN;
     int volume;
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Periodico(String sigla, String nome, String tipo, Float impacto, String ISSN){

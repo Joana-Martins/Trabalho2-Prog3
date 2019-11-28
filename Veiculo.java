@@ -1,9 +1,12 @@
-class Veiculo{
+import java.io.Serializable;
+
+class Veiculo implements Serializable{
     String sigla;
     String nome;
     String tipo;
     float impacto;
     Qualis qualis;
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Veiculo(String sigla, String nome, String tipo, float impacto){

@@ -1,15 +1,17 @@
 import java.util.*;
 import java.io.*;
 import java.lang.*;
+import java.nio.Buffer;
 import java.text.SimpleDateFormat;
 
-class Trabalho{
+public class Trabalho implements Serializable{
     List<Docente> docentes = new ArrayList<Docente>();
     List<Veiculo> veiculos = new ArrayList<Veiculo>();
     List<Publicacao> publicacoes = new ArrayList<Publicacao>();
     List<Regra> regras = new ArrayList<Regra>();
     List<Qualis> qualis = new ArrayList<Qualis>();
     int ano;
+    private static final long serialVersionUID = 1L;
 
     public Trabalho(){}
 
@@ -137,6 +139,7 @@ class Trabalho{
             if(scanner.hasNextLine()) scanner.nextLine();
             else break;
         }
+        scanner.close();
     }
 
     public void carregaArquivoRegras(File regras) throws Exception{
@@ -156,10 +159,10 @@ class Trabalho{
             if(scanner.hasNextLine()) scanner.nextLine();
             else break;
         }
+        scanner.close();
     }
 
     public void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
-        FileWriter fr = null;
         BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
         bufferWriter.append("Ano;Sigla Veículo;Veículo;Qualis;Fator de Impacto;Título;Docentes\n");
     
@@ -192,13 +195,43 @@ class Trabalho{
     }
 
     public void imprimeArquivoRecredenciamento(FileWriter recredenciamento) throws Exception{
-        FileWriter fr = null;
         BufferedWriter bufferWriter = new BufferedWriter(recredenciamento);
         bufferWriter.append("Docente;Pontuação;Recredenciado?\n");
-        for(Docente d:this.docentes){
-            System.out.println(d.get_nome()+": ");
-            d.calcula_pontuacao();
+        this.docentes.sort(docente);
+
+        Regra regra = null;
+        Calendar calendar = new GregorianCalendar();
+        for(Regra r:this.regras){
+            calendar.setTime(r.get_inicioVigencia());
+            int year = calendar.get(Calendar.YEAR);
+            if(year == this.ano) regra = r; break;
         }
+        for(Docente d:this.docentes){
+            d.calcula_pontuacao(regra);
+            d.calcula_situacao(this.ano, regra);
+            bufferWriter.append(d.get_nome()+";");
+            bufferWriter.append(String.format("%.1f", d.get_pontuacao())+";");
+            bufferWriter.append(d.get_situacao()+"\n");
+        }
+        bufferWriter.close();
+    }
+
+    public void imprimeArquivoEstatisticas(FileWriter estatisticas) throws Exception{
+        BufferedWriter bufferWriter = new BufferedWriter(estatisticas);
+        bufferWriter.append("Qualis;Qtd. Artigos;Média Artigos / Docente\n");
+        
+        String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
+        for(String q:qualis){
+            int c1 = 0;
+            Float c2 = 0f;
+            for(Publicacao p:this.publicacoes){
+                if(p.get_veiculo().get_qualis().get_nota().equals(q)) c1++;
+            }
+            bufferWriter.append(q + ";");
+            bufferWriter.append(c1 + ";");
+            bufferWriter.append(String.format("%.2f", c2) + "\n");
+        }
+        bufferWriter.close();
     }
 
     Comparator<Publicacao> publicacao = new Comparator<Publicacao>(){
@@ -213,6 +246,27 @@ class Trabalho{
         }
     };
 
+    Comparator<Docente> docente = new Comparator<Docente>(){
+        public int compare(Docente d1, Docente d2){
+            return d1.get_nome().compareTo(d2.get_nome());
+        }
+    };
+
+    public void serializar_sistema(){
+        Trabalho t = this;
+        try{
+            FileOutputStream arquivoGrav = new FileOutputStream("recredenciamento.dat");
+            ObjectOutputStream objGravar = new ObjectOutputStream(arquivoGrav);
+            objGravar.writeObject(t);
+            objGravar.flush();
+            objGravar.close();
+            arquivoGrav.flush();
+            arquivoGrav.close();
+            System.out.println("Objeto gravado com sucesso!");
+        }
+        catch(Exception e){ e.printStackTrace();}
+    }
+
     public static void main(String argv[]) throws Exception {
         Trabalho trabalho = new Trabalho();
 
@@ -226,7 +280,7 @@ class Trabalho{
                 case 'p': publicacoes = new File(argv[2*i+1]); break; 
                 case 'q': qualis = new File(argv[2*i+1]); break; 
                 case 'r': regras = new File(argv[2*i+1]); break; 
-                case 'a': trabalho.ano = Integer.parseInt(argv[2*i+1]);
+                case 'a': trabalho.ano = Integer.parseInt(argv[2*i+1]); break;
                 default: break;
             }
         }
@@ -236,9 +290,14 @@ class Trabalho{
         trabalho.carregaArquivoRegras(regras);
         trabalho.carregaArquivosQualis(qualis);
 
-        FileWriter output_publicacoes = new FileWriter("2-publicacoes.txt");
-        trabalho.imprimeArquivoPublicacoes(output_publicacoes);
-        FileWriter output_recredenciamento = new FileWriter("1-recredenciamento.txt");
+        trabalho.serializar_sistema();
+
+        FileWriter output_recredenciamento = new FileWriter("1-recredenciamento.csv");
+        FileWriter output_publicacoes = new FileWriter("2-publicacoes.csv");
+        FileWriter output_estatisticas = new FileWriter("3-estatisticas.csv");
+
         trabalho.imprimeArquivoRecredenciamento(output_recredenciamento);
+        trabalho.imprimeArquivoPublicacoes(output_publicacoes);
+        trabalho.imprimeArquivoEstatisticas(output_estatisticas);
     }
 }

@@ -1,7 +1,10 @@
-class Qualis{
+import java.io.Serializable;
+
+class Qualis implements Serializable{
     int ano;
     String nota;
     Float pontuacao;
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Qualis(int ano, String nota){
@@ -36,12 +39,12 @@ class Qualis{
             int contador = 0;
             while(contador<regra.notas.length-1){
                 if(this.get_nota().compareTo(regra.notas[contador])>=0 && this.get_nota().compareTo(regra.notas[contador+1])<0){
-                    this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+                    this.set_pontuacao(Float.parseFloat(regra.pontos[contador]));
                     break;
                 }
                 contador++;
             }
-            if(contador==regra.notas.length-1) this.set_pontuacao(Float.parseFloat(regra.pontos[contador])*regra.multiplicador);
+            if(contador==regra.notas.length-1) this.set_pontuacao(Float.parseFloat(regra.pontos[contador]));
         //}
         //else this.set_pontuacao(Float.parseFloat("0"));
     }

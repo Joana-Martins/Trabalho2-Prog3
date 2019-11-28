@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-class Publicacao{
+class Publicacao implements Serializable{
     int ano;
     Veiculo veiculo;
     String titulo;
@@ -8,6 +9,7 @@ class Publicacao{
     int numero;
     int paginaInicial;
     int paginaFinal;
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Publicacao(int ano, Veiculo veiculo, String titulo, List<Docente> docentes, int numero, int paginaInicial, int paginaFinal){

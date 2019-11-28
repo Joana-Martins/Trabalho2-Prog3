@@ -1,6 +1,7 @@
+import java.io.Serializable;
 import java.util.*;
 
-class Regra{
+class Regra implements Serializable{
     Date inicioVigencia;
     Date fimVigencia;
     String[] notas;
@@ -8,6 +9,7 @@ class Regra{
     Float multiplicador;
     int anos;
     float minimoPontos;
+    static final long serialVersionUID = 1L;
 
     // Construtor
     public Regra(Date inicioVigencia, Date fimVigencia, String[] notas, String[] pontos, Float multiplicador, int anos, float minimoPontos){
