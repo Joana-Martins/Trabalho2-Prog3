@@ -304,18 +304,17 @@ public class Trabalho implements Serializable{
         FileInputStream docentes = null, veiculos = null, publicacoes = null, qualis = null, regras = null;
         List<Character> parametros = new ArrayList<Character>();
 
-        for(int i=0;i<6;i++){
+        for(int i=0;i<7;i++){
             try{
-                parametros.add(argv[2*i].charAt(1));
-                switch(parametros.get(i)){
-                    case 'd': docentes = new FileInputStream(argv[2*i+1]); break; 
-                    case 'v': veiculos = new FileInputStream(argv[2*i+1]); break;   
-                    case 'p': publicacoes = new FileInputStream(argv[2*i+1]); break; 
-                    case 'q': qualis = new FileInputStream(argv[2*i+1]); break; 
-                    case 'r': regras = new FileInputStream(argv[2*i+1]); break; 
-                    case 'a': trabalho.ano = Integer.parseInt(argv[2*i+1]); break;
-                    default: break;
-                }
+                if(argv[2*i].equals("-d")) docentes = new FileInputStream(argv[2*i+1]);
+                else if(argv[2*i].equals("-v")) veiculos = new FileInputStream(argv[2*i+1]);
+                else if(argv[2*i].equals("-p")) publicacoes = new FileInputStream(argv[2*i+1]);
+                else if(argv[2*i].equals("-q")) qualis = new FileInputStream(argv[2*i+1]);
+                else if(argv[2*i].equals("-r")) regras = new FileInputStream(argv[2*i+1]);
+                else if(argv[2*i].equals("-a")) trabalho.ano = Integer.parseInt(argv[2*i+1]);
+                else if(argv[2*i].equals("--read-only")) trabalho.exit = 2;
+                else if(argv[2*i].equals("--write-only")) trabalho.exit = 3;
+                else trabalho.exit = 0;
             }
             catch(FileNotFoundException exception){
                 System.out.println("Erro de I/O");
@@ -329,6 +328,7 @@ public class Trabalho implements Serializable{
                 System.out.println("Erro de I/O");
                 trabalho.exit = 1;
             }
+            if(i == 6 && argv.length == 12) break;
         }
 
         if(trabalho.exit == 0){
