@@ -271,21 +271,24 @@ public class Trabalho implements Serializable{
         }
         bufferWriter.close();
     }
-
+    
     public void imprimeArquivoEstatisticas(FileWriter estatisticas) throws Exception{
         BufferedWriter bufferWriter = new BufferedWriter(estatisticas);
         bufferWriter.append("Qualis;Qtd. Artigos;Média Artigos / Docente\n");
         
         String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
         for(String q:qualis){
-            int c1 = 0;
-            Float c2 = 0f;
+            int publicacao_qualis = 0;
+            Float arquivos_docente = 0f;
             for(Publicacao p:this.publicacoes){
-                if(p.get_veiculo().get_qualis().get_nota().equals(q)) c1++;
+                if(p.get_veiculo().get_qualis().get_nota().equals(q)){
+                    publicacao_qualis++;
+                    arquivos_docente = arquivos_docente + (float)((1.0)/p.get_autores().size());
+                }
             }
             bufferWriter.append(q + ";");
-            bufferWriter.append(c1 + ";");
-            bufferWriter.append(String.format("%.2f", c2) + "\n");
+            bufferWriter.append(publicacao_qualis + ";");
+            bufferWriter.append(String.format("%.2f", arquivos_docente) + "\n");
         }
         bufferWriter.close();
     }
