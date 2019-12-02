@@ -9,7 +9,7 @@ class Docente implements Serializable{
     Boolean coordenador;
     List<Publicacao> publicacoes = new ArrayList<Publicacao>();
     Float pontuacao = 0f;
-    String situacao = "";
+    String situacao;
     static final long serialVersionUID = 1L;
 
     // Construtor
