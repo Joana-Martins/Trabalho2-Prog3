@@ -18,4 +18,22 @@ class Serializacao{
             System.out.println("Erro de I/O"); 
         } 
     }
+    public Trabalho desserializar(){
+        Trabalho t = null;
+        try{
+            FileInputStream file = new FileInputStream("recredenciamento.dat");
+            ObjectInputStream in = new ObjectInputStream(file);
+
+            t = (Trabalho)in.readObject();
+            in.close();
+            file.close();
+        }
+        catch(IOException ex){
+            System.out.println("Erro de I/O");
+        }
+        catch(ClassNotFoundException ex){
+            System.out.println("Erro de I/O");
+        }
+        return t;
+    }
 }

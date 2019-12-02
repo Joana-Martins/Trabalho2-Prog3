@@ -17,6 +17,12 @@ public class Trabalho implements Serializable{
 
     public Trabalho(){}
 
+    public String formata_string(String palavra){
+        if(palavra.endsWith(" ")) return palavra.substring(0, palavra.length() - 1);
+        else if(palavra.startsWith(" ")) return palavra.substring(1, palavra.length());
+        else return palavra;
+    }
+
     public void carregaArquivoDocentes(FileInputStream docentes){ 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Scanner scanner = new Scanner(docentes,"UTF-8");
@@ -24,10 +30,10 @@ public class Trabalho implements Serializable{
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                Long codigo = scanner.nextLong();
-                String nome = scanner.next();
-                Date dataNascimento = formato.parse(scanner.next());
-                Date dataIngresso = formato.parse(scanner.next());
+                Long codigo = Long.parseLong(formata_string(scanner.next()));
+                String nome = formata_string(scanner.next());
+                Date dataNascimento = formato.parse(formata_string(scanner.next()));
+                Date dataIngresso = formato.parse(formata_string(scanner.next()));
                 String coordenador = scanner.next();
 
                 Docente docente = new Docente(codigo, nome, dataNascimento, dataIngresso, coordenador);
@@ -57,10 +63,10 @@ public class Trabalho implements Serializable{
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                String sigla = scanner.next();
-                String nome = scanner.next();
-                String tipo = scanner.next();
-                Float impacto = scanner.nextFloat();
+                String sigla = formata_string(scanner.next());
+                String nome = formata_string(scanner.next());
+                String tipo = formata_string(scanner.next());
+                Float impacto = Float.parseFloat(formata_string(scanner.next()));
 
                 if(tipo.equals("P")){
                     String ISSN = scanner.next();
@@ -88,20 +94,20 @@ public class Trabalho implements Serializable{
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                int ano = scanner.nextInt();
-                String veiculo_ = scanner.next();
-                String titulo = scanner.next();
-                String[] docentes_ = scanner.next().split(",");                 
-                int numero = scanner.nextInt();
-                String volume_ = scanner.next();
-                String local = scanner.next();
-                int paginaInicial = scanner.nextInt();
-                int paginaFinal = scanner.nextInt();
+                int ano = Integer.parseInt(formata_string(scanner.next()));
+                String veiculo_ = formata_string(scanner.next());
+                String titulo = formata_string(scanner.next());
+                String[] docentes_ = scanner.next().split(",");          
+                int numero = Integer.parseInt(formata_string(scanner.next()));
+                String volume_ = formata_string(scanner.next());
+                String local = formata_string(scanner.next());
+                int paginaInicial = Integer.parseInt(formata_string(scanner.next()));
+                int paginaFinal = Integer.parseInt(formata_string(scanner.next()));
             
                 List<Docente> docentes = new ArrayList<Docente>();
                 for(String autor:docentes_){
                     for(Docente docente:this.docentes){
-                        if(String.valueOf(docente.get_codigo()).equals(autor)) docentes.add(docente);
+                        if(String.valueOf(docente.get_codigo()).equals(formata_string(autor))) docentes.add(docente);
                     }
                 }
 
@@ -150,9 +156,9 @@ public class Trabalho implements Serializable{
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                int ano = scanner.nextInt();
-                String veiculo = scanner.next();
-                String nota = scanner.next();
+                int ano = Integer.parseInt(formata_string(scanner.next()));
+                String veiculo = formata_string(scanner.next());
+                String nota = formata_string(scanner.next());
                 Qualis q = new Qualis(ano, nota);
             
                 Calendar calendar = new GregorianCalendar();
@@ -185,13 +191,13 @@ public class Trabalho implements Serializable{
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                Date inicioVigencia = formato.parse(scanner.next());
-                Date fimVigencia = formato.parse(scanner.next());
+                Date inicioVigencia = formato.parse(formata_string(scanner.next()));
+                Date fimVigencia = formato.parse(formata_string(scanner.next()));
                 String[] notas = scanner.next().split(",");
                 String[] pontos = scanner.next().split(",");      
-                Float multiplicador = scanner.nextFloat();
-                int anos = scanner.nextInt();
-                Float minimoPontos = scanner.nextFloat();
+                Float multiplicador = Float.parseFloat(formata_string(scanner.next()));
+                int anos = Integer.parseInt(formata_string(scanner.next()));
+                Float minimoPontos = Float.parseFloat(formata_string(scanner.next()));
                 this.regras.add(new Regra(inicioVigencia, fimVigencia, notas, pontos, multiplicador, anos, minimoPontos));
             }
             catch(InputMismatchException exception){
@@ -304,16 +310,18 @@ public class Trabalho implements Serializable{
         FileInputStream docentes = null, veiculos = null, publicacoes = null, qualis = null, regras = null;
         List<Character> parametros = new ArrayList<Character>();
 
-        for(int i=0;i<7;i++){
+        for(int i=0;i<13;i++){
+            if(i == 12 && argv.length == 12) break;
+            else if(i == 1 && argv.length == 1) break;
             try{
-                if(argv[2*i].equals("-d")) docentes = new FileInputStream(argv[2*i+1]);
-                else if(argv[2*i].equals("-v")) veiculos = new FileInputStream(argv[2*i+1]);
-                else if(argv[2*i].equals("-p")) publicacoes = new FileInputStream(argv[2*i+1]);
-                else if(argv[2*i].equals("-q")) qualis = new FileInputStream(argv[2*i+1]);
-                else if(argv[2*i].equals("-r")) regras = new FileInputStream(argv[2*i+1]);
-                else if(argv[2*i].equals("-a")) trabalho.ano = Integer.parseInt(argv[2*i+1]);
-                else if(argv[2*i].equals("--read-only")) trabalho.exit = 2;
-                else if(argv[2*i].equals("--write-only")) trabalho.exit = 3;
+                if(argv[i].equals("-d")) docentes = new FileInputStream(argv[i+1]);
+                else if(argv[i].equals("-v")) veiculos = new FileInputStream(argv[i+1]);
+                else if(argv[i].equals("-p")) publicacoes = new FileInputStream(argv[i+1]);
+                else if(argv[i].equals("-q")) qualis = new FileInputStream(argv[i+1]);
+                else if(argv[i].equals("-r")) regras = new FileInputStream(argv[i+1]);
+                else if(argv[i].equals("-a")) trabalho.ano = Integer.parseInt(argv[i+1]);
+                else if(argv[i].equals("--read-only")) trabalho.exit = 2;
+                else if(argv[i].equals("--write-only")) trabalho.exit = 3;
                 else trabalho.exit = 0;
             }
             catch(FileNotFoundException exception){
@@ -328,7 +336,6 @@ public class Trabalho implements Serializable{
                 System.out.println("Erro de I/O");
                 trabalho.exit = 1;
             }
-            if(i == 6 && argv.length == 12) break;
         }
 
         if(trabalho.exit == 0){
@@ -338,8 +345,29 @@ public class Trabalho implements Serializable{
             trabalho.carregaArquivoRegras(regras);
             trabalho.carregaArquivosQualis(qualis);
 
+            FileWriter output_recredenciamento = new FileWriter("1-recredenciamento.csv");
+            FileWriter output_publicacoes = new FileWriter("2-publicacoes.csv");
+            FileWriter output_estatisticas = new FileWriter("3-estatisticas.csv");
+
+            trabalho.imprimeArquivoRecredenciamento(output_recredenciamento);
+            trabalho.imprimeArquivoPublicacoes(output_publicacoes);
+            trabalho.imprimeArquivoEstatisticas(output_estatisticas);
+        }
+
+        else if(trabalho.exit == 2){
+            trabalho.carregaArquivoDocentes(docentes);
+            trabalho.carregaArquivoVeiculos(veiculos);
+            trabalho.carregaArquivoPublicacoes(publicacoes);
+            trabalho.carregaArquivoRegras(regras);
+            trabalho.carregaArquivosQualis(qualis);
+
             Serializacao serializacao = new Serializacao();
             serializacao.serializar(trabalho);
+        }
+
+        else if(trabalho.exit == 3){
+            Serializacao serializacao = new Serializacao();
+            trabalho = serializacao.desserializar();
 
             FileWriter output_recredenciamento = new FileWriter("1-recredenciamento.csv");
             FileWriter output_publicacoes = new FileWriter("2-publicacoes.csv");

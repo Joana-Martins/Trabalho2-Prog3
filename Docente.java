@@ -9,7 +9,7 @@ class Docente implements Serializable{
     Boolean coordenador;
     List<Publicacao> publicacoes = new ArrayList<Publicacao>();
     Float pontuacao = 0f;
-    String situacao;
+    String situacao = "";
     static final long serialVersionUID = 1L;
 
     // Construtor
@@ -82,9 +82,9 @@ class Docente implements Serializable{
         Calendar c1 = new GregorianCalendar(); c1.setTime(this.get_dataNascimento());
         Calendar c2 = new GregorianCalendar(); c2.setTime(this.get_dataIngresso());
 
-        if(ano - c1.get(Calendar.YEAR) > 60) this.set_situacao("PPS");
-        else if(ano - c2.get(Calendar.YEAR) < 3) this.set_situacao("PPJ");
-        else if(this.get_coordenador()) this.set_situacao("Coordenador");
+        if(this.get_coordenador()) this.set_situacao("Coordenador");
+        else if(ano - c2.get(Calendar.YEAR) <= 3) this.set_situacao("PPJ");
+        else if(ano - c1.get(Calendar.YEAR) > 60) this.set_situacao("PPS");
         else if(this.get_pontuacao() >= regra.get_minimoPontos()) this.set_situacao("Sim");
         else this.set_situacao("Não");
     }
