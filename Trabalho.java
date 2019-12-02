@@ -22,6 +22,10 @@ public class Trabalho implements Serializable{
         else if(palavra.startsWith(" ")) return palavra.substring(1, palavra.length());
         else return palavra;
     }
+    public String formata_float(String numero){
+        if(numero.contains(",")) return numero.replace(",", ".");
+        else return numero;
+    }
 
     public void carregaArquivoDocentes(FileInputStream docentes){ 
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
@@ -66,7 +70,7 @@ public class Trabalho implements Serializable{
                 String sigla = formata_string(scanner.next());
                 String nome = formata_string(scanner.next());
                 String tipo = formata_string(scanner.next());
-                Float impacto = Float.parseFloat(formata_string(scanner.next()));
+                Float impacto = Float.parseFloat(formata_float(scanner.next()));
 
                 if(tipo.equals("P")){
                     String ISSN = scanner.next();
@@ -195,9 +199,9 @@ public class Trabalho implements Serializable{
                 Date fimVigencia = formato.parse(formata_string(scanner.next()));
                 String[] notas = scanner.next().split(",");
                 String[] pontos = scanner.next().split(",");      
-                Float multiplicador = Float.parseFloat(formata_string(scanner.next()));
+                Float multiplicador = Float.parseFloat(formata_float(scanner.next()));
                 int anos = Integer.parseInt(formata_string(scanner.next()));
-                Float minimoPontos = Float.parseFloat(formata_string(scanner.next()));
+                Float minimoPontos = Float.parseFloat(formata_float(scanner.next()));
                 this.regras.add(new Regra(inicioVigencia, fimVigencia, notas, pontos, multiplicador, anos, minimoPontos));
             }
             catch(InputMismatchException exception){
