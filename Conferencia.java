@@ -1,5 +1,6 @@
 import java.io.Serializable;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
 
 
 class Conferencia extends Veiculo implements Serializable{
@@ -10,7 +11,7 @@ class Conferencia extends Veiculo implements Serializable{
     // Construtor
 
     /**
-     * Construtor da classe Conferência
+     * Construtor da classe Conferência.
      * @param sigla sigla da conferência.
      * @param nome nome da conferência.
      * @param tipo tipo de veículo. Para conferência, tal parâmetro será igual à 'C'.

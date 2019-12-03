@@ -1,8 +1,20 @@
-import java.io.*;
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.IOException;
 
 class Serializacao{
+    // Construtor
+
+    /**
+     * Constutor da classe Serialização
+     */
     public Serializacao(){}
+    /**
+     * Função que serializa um objeto.
+     * @param trabalho objeto principal do sistema.
+     */
     public void serializar(Trabalho trabalho){
         try{ 
             FileOutputStream file = new FileOutputStream("recredenciamento.dat"); 
@@ -18,6 +30,11 @@ class Serializacao{
             System.out.println("Erro de I/O"); 
         } 
     }
+
+    /**
+     * Função que desserializa um objeto.
+     * @return objeto principal do sistema.
+     */
     public Trabalho desserializar(){
         Trabalho t = null;
         try{

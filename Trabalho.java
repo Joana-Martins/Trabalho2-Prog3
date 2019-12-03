@@ -15,44 +15,73 @@ public class Trabalho implements Serializable{
 
     private static final long serialVersionUID = 1L;
 
+    // Construtor
+
+    /**
+     * Construtor da classe Trabalho
+     */
     public Trabalho(){}
 
+    // Funções de formatação de texto
+
+
+    /**
+     * Função que formata uma string, retirando possíveis espaços desnecessários.
+     * @param palavra palavra a ser formatada.
+     * @return palavra formatada.
+     */
     public String formata_string(String palavra){
-        if(palavra.endsWith(" ")) return palavra.substring(0, palavra.length() - 1);
-        else if(palavra.startsWith(" ")) return palavra.substring(1, palavra.length());
-        else return palavra;
+        String aux = palavra;
+        if(palavra.endsWith(" ")) aux = palavra.substring(0, palavra.length() - 1);
+        if(palavra.startsWith(" ")) aux = palavra.substring(1, palavra.length());
+        return aux;
     }
+
+    /**
+     * Função que formata um float, trocando a vírgula de uma string por um ponto.
+     * @param numero número a ser formatado.
+     * @return número formatado.
+     */
     public String formata_float(String numero){
         if(numero.contains(",")) return numero.replace(",", ".");
         else return numero;
     }
 
-    public void carregaArquivoDocentes(FileInputStream docentes){ 
+    /**
+     * Função que carrega o arquivo de docentes.
+     * @param docentes aquivo de docentes a ser lido.
+     * @throws Exception
+     */
+    public void carregaArquivoDocentes(FileInputStream docentes) throws Exception{
+        String palavra;
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Scanner scanner = new Scanner(docentes,"UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                Long codigo = Long.parseLong(formata_string(scanner.next()));
-                String nome = formata_string(scanner.next());
-                Date dataNascimento = formato.parse(formata_string(scanner.next()));
-                Date dataIngresso = formato.parse(formata_string(scanner.next()));
-                String coordenador = scanner.next();
+
+                palavra = formata_float(scanner.next().trim());
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                Long codigo = Long.parseLong(palavra);
+
+                String nome = scanner.next().trim();
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_data(palavra);
+                Date dataNascimento = formato.parse(palavra);
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_data(palavra);
+                Date dataIngresso = formato.parse(palavra);
+
+                String coordenador = scanner.next().trim();
 
                 Docente docente = new Docente(codigo, nome, dataNascimento, dataIngresso, coordenador);
                 this.docentes.add(docente);
             }
-            catch(InputMismatchException exception){
-                System.out.println("Erro de formatação");
-                this.exit = 1;
-            }
-            catch(ParseException exception){
-                System.out.println("Erro de formatação");
-                this.exit = 1;
-            }
-            catch(NullPointerException exception){
-                System.out.println("Erro de formatação");
+            catch(Excecoes.ErroDeFormatacao exception){
+                System.out.println(exception.getMessage());
                 this.exit = 1;
             }
             if(scanner.hasNextLine()) scanner.nextLine();
@@ -61,29 +90,38 @@ public class Trabalho implements Serializable{
         scanner.close();
     }
 
+    /**
+     * Função que carrega o arquivo de veículos.
+     * @param veiculos arquivo de veículos a ser lido.
+     * @throws Exception
+     */
     public void carregaArquivoVeiculos(FileInputStream veiculos) throws Exception{
+        String palavra;
         Scanner scanner = new Scanner(veiculos, "UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                String sigla = formata_string(scanner.next());
-                String nome = formata_string(scanner.next());
-                String tipo = formata_string(scanner.next());
-                Float impacto = Float.parseFloat(formata_float(scanner.next()));
+                String sigla = scanner.next().trim();
+                String nome = scanner.next().trim();
+                String tipo = scanner.next().trim();
+
+                palavra = formata_float(scanner.next().trim());
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                Float impacto = Float.parseFloat(palavra);
 
                 if(tipo.equals("P")){
-                    String ISSN = scanner.next();
+                    String ISSN = scanner.next().trim();
                     Periodico periodico = new Periodico(sigla, nome, tipo, impacto, ISSN);
                     this.veiculos.add(periodico);
                 }
-                if(tipo.equals("C")){
+                else if(tipo.equals("C")){
                     Conferencia conferencia = new Conferencia(sigla, nome, tipo, impacto);
                     this.veiculos.add(conferencia);
                 }
             }
-            catch(InputMismatchException exception){
-                System.out.println("Erro de formatação");
+            catch(Excecoes.ErroDeFormatacao exception){
+                System.out.println(exception.getMessage());
                 this.exit = 1;
             }
             if(scanner.hasNextLine()) scanner.nextLine();
@@ -92,32 +130,53 @@ public class Trabalho implements Serializable{
         scanner.close();
     }
 
+    /**
+     * Função que carrega o arquivo de publicações.
+     * @param publicacoes arquivo de publicações a ser lido.
+     * @throws Exception
+     */
     public void carregaArquivoPublicacoes(FileInputStream publicacoes) throws Exception{
+        String palavra;
         Scanner scanner = new Scanner(publicacoes, "UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                int ano = Integer.parseInt(formata_string(scanner.next()));
-                String veiculo_ = formata_string(scanner.next());
-                String titulo = formata_string(scanner.next());
-                String[] docentes_ = scanner.next().split(",");          
-                int numero = Integer.parseInt(formata_string(scanner.next()));
-                String volume_ = formata_string(scanner.next());
-                String local = formata_string(scanner.next());
-                int paginaInicial = Integer.parseInt(formata_string(scanner.next()));
-                int paginaFinal = Integer.parseInt(formata_string(scanner.next()));
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int ano = Integer.parseInt(palavra);
+
+                String veiculo = scanner.next().trim();
+                String titulo = scanner.next().trim();
+                String[] docentes_ = scanner.next().split(",");
+                for(String d:docentes_) d.trim();
+                
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int numero = Integer.parseInt(palavra);
+                
+                String volume_ = scanner.next().trim();
+                String local = scanner.next().trim();
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int paginaInicial = Integer.parseInt(palavra);
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int paginaFinal = Integer.parseInt(palavra);
             
                 List<Docente> docentes = new ArrayList<Docente>();
                 for(String autor:docentes_){
                     for(Docente docente:this.docentes){
-                        if(String.valueOf(docente.get_codigo()).equals(formata_string(autor))) docentes.add(docente);
+                        if(String.valueOf(docente.get_codigo()).equals(autor.trim())) docentes.add(docente);
                     }
                 }
 
                 Publicacao publicacao = null;
                 for(Veiculo v:this.veiculos){
-                    if(v.get_sigla().equals(veiculo_)){
+                    if(v.get_sigla().equals(veiculo)){
                         if(v.tipo.equals("P")){
                             int volume = Integer.parseInt(volume_);
                             Periodico periodico = (Periodico)v;
@@ -144,8 +203,11 @@ public class Trabalho implements Serializable{
                     if(contagem==this.publicacoes.size()) this.publicacoes.add(publicacao);
                 }
             }
-            catch(InputMismatchException exception){
-                System.out.println("Erro de formatação");
+            catch(Excecoes.ErroDeFormatacao exception){
+                System.out.println(exception.getMessage());
+                this.exit = 1;
+            }
+            catch(NullPointerException exception){
                 this.exit = 1;
             }
             if(scanner.hasNextLine()) scanner.nextLine();
@@ -154,15 +216,26 @@ public class Trabalho implements Serializable{
         scanner.close();
     }
 
+    /**
+     * Função que carrega o arquivo de qualis.
+     * @param qualis arquivo de qualis a ser lido.
+     * @throws Exception
+     */
     public void carregaArquivosQualis(FileInputStream qualis) throws Exception{
+        String palavra;
         Scanner scanner = new Scanner(qualis, "UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                int ano = Integer.parseInt(formata_string(scanner.next()));
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int ano = Integer.parseInt(palavra);
+
                 String veiculo = formata_string(scanner.next());
                 String nota = formata_string(scanner.next());
+
                 Qualis q = new Qualis(ano, nota);
             
                 Calendar calendar = new GregorianCalendar();
@@ -178,8 +251,11 @@ public class Trabalho implements Serializable{
                     if(v.get_sigla().equals(veiculo)) v.set_qualis(q);
                 }
             }
-            catch(InputMismatchException exception){
-                System.out.println("Erro de formatação");
+            catch(Excecoes.ErroDeFormatacao exception){
+                System.out.println(exception.getMessage());
+                this.exit = 1;
+            }
+            catch(NullPointerException exception){
                 this.exit = 1;
             }
             if(scanner.hasNextLine()) scanner.nextLine();
@@ -188,28 +264,50 @@ public class Trabalho implements Serializable{
         scanner.close();
     }
 
+    /**
+     * Função que carrega o arquivo de regras.
+     * @param regras arquivo de regras a ser lido.
+     * @throws Exception
+     */
     public void carregaArquivoRegras(FileInputStream regras) throws Exception{
+        String palavra;
         SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy");
         Scanner scanner = new Scanner(regras, "UTF-8");
         scanner.nextLine();
         while(scanner.hasNext()){
             try{
                 scanner.useDelimiter(";|\n");
-                Date inicioVigencia = formato.parse(formata_string(scanner.next()));
-                Date fimVigencia = formato.parse(formata_string(scanner.next()));
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_data(palavra);
+                Date inicioVigencia = formato.parse(palavra);
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_data(palavra);
+                Date fimVigencia = formato.parse(palavra);
+
                 String[] notas = scanner.next().split(",");
-                String[] pontos = scanner.next().split(",");      
-                Float multiplicador = Float.parseFloat(formata_float(scanner.next()));
-                int anos = Integer.parseInt(formata_string(scanner.next()));
-                Float minimoPontos = Float.parseFloat(formata_float(scanner.next()));
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_pontos(palavra);
+                String[] pontos = palavra.split(",");
+
+                palavra = formata_float(scanner.next().trim());
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                Float multiplicador = Float.parseFloat(palavra);
+
+                palavra = scanner.next().trim();
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                int anos = Integer.parseInt(palavra);
+
+                palavra = formata_float(scanner.next().trim());
+                Excecoes.ErroDeFormatacao.checa_se_numero(palavra);
+                Float minimoPontos = Float.parseFloat(palavra);
+
                 this.regras.add(new Regra(inicioVigencia, fimVigencia, notas, pontos, multiplicador, anos, minimoPontos));
             }
-            catch(InputMismatchException exception){
-                System.out.println("Erro de formatação");
-                this.exit = 1;
-            }
-            catch(NullPointerException exception){
-                System.out.println("Erro de formatação");
+            catch(Excecoes.ErroDeFormatacao exception){
+                System.out.println(exception.getMessage());
                 this.exit = 1;
             }
             if(scanner.hasNextLine()) scanner.nextLine();
@@ -218,79 +316,109 @@ public class Trabalho implements Serializable{
         scanner.close();
     }
 
+    /**
+     * Função que escreve o arquivo de saída de publicações.
+     * @param publicacoes arquivo a ser gerado.
+     * @throws Exception
+     */
     public void imprimeArquivoPublicacoes(FileWriter publicacoes) throws Exception{
-        BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
-        bufferWriter.append("Ano;Sigla Veículo;Veículo;Qualis;Fator de Impacto;Título;Docentes\n");
+        try{
+            BufferedWriter bufferWriter = new BufferedWriter(publicacoes);
+            bufferWriter.append("Ano;Sigla Veículo;Veículo;Qualis;Fator de Impacto;Título;Docentes\n");
     
-        String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
-        for(String q:qualis){
-            List<Publicacao> lista = new ArrayList<Publicacao>();
-            for(Publicacao p:this.publicacoes){
-                if(p.get_veiculo().get_qualis().get_nota().equals(q)) lista.add(p);
+            String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
+            for(String q:qualis){
+                List<Publicacao> lista = new ArrayList<Publicacao>();
+                for(Publicacao p:this.publicacoes){
+                    if(p.get_veiculo().get_qualis().get_nota().equals(q)) lista.add(p);
+                }
+                lista.sort(publicacao);
+                for(Publicacao publicacao:lista){
+                    bufferWriter.append(publicacao.get_ano()+";");
+                    bufferWriter.append(publicacao.get_veiculo().get_sigla()+";");
+                    bufferWriter.append(publicacao.get_veiculo().get_nome()+";");
+                    bufferWriter.append(publicacao.get_veiculo().get_qualis().get_nota()+";");
+                    bufferWriter.append(String.format("%.3f", publicacao.get_veiculo().get_impacto())+";");
+                    bufferWriter.append(publicacao.get_titulo()+";");
+                    int contagem = 1;
+                    for(Docente docente:publicacao.autores){
+                        bufferWriter.append(docente.get_nome());
+                        if(publicacao.autores.size() - contagem != 0){
+                            bufferWriter.append(",");
+                            contagem++;
+                        }
+                    }
+                    bufferWriter.append("\n");
+                }
             }
-            lista.sort(publicacao);
-            for(Publicacao publicacao:lista){
-                bufferWriter.append(publicacao.get_ano()+";");
-                bufferWriter.append(publicacao.get_veiculo().get_sigla()+";");
-                bufferWriter.append(publicacao.get_veiculo().get_nome()+";");
-                bufferWriter.append(publicacao.get_veiculo().get_qualis().get_nota()+";");
-                bufferWriter.append(String.format("%.3f", publicacao.get_veiculo().get_impacto())+";");
-                bufferWriter.append(publicacao.get_titulo()+";");
-                int contagem = 1;
-                for(Docente docente:publicacao.autores){
-                    bufferWriter.append(docente.get_nome());
-                    if(publicacao.autores.size() - contagem != 0){
-                        bufferWriter.append(",");
-                        contagem++;
+            bufferWriter.close();
+        }
+        catch(NullPointerException exception){
+            this.exit = 1;
+        }
+    }
+
+    /**
+     * Função que escreve o arquivo de saída de recredenciamento.
+     * @param recredenciamento arquivo a ser gerado.
+     * @throws Exception
+     */
+    public void imprimeArquivoRecredenciamento(FileWriter recredenciamento) throws Exception{
+        try{
+            BufferedWriter bufferWriter = new BufferedWriter(recredenciamento);
+            bufferWriter.append("Docente;Pontuação;Recredenciado?\n");
+            this.docentes.sort(docente);
+
+            Regra regra = null;
+            Calendar calendar = new GregorianCalendar();
+            for(Regra r:this.regras){
+                calendar.setTime(r.get_inicioVigencia());
+                int year = calendar.get(Calendar.YEAR);
+                if(year == this.ano) regra = r; break;
+            }
+            for(Docente d:this.docentes){
+                d.calcula_pontuacao(regra);
+                d.calcula_situacao(this.ano, regra);
+                bufferWriter.append(d.get_nome()+";");
+                bufferWriter.append(String.format("%.1f", d.get_pontuacao())+";");
+                bufferWriter.append(d.get_situacao()+"\n");
+            }
+            bufferWriter.close();
+        }
+        catch(NullPointerException exception){
+            this.exit = 1;
+        }
+    }
+    
+    /**
+     * Função que escreve o arquivo de saída de estatísticas.
+     * @param estatisticas arquivo a ser gerado.
+     * @throws Exception
+     */
+    public void imprimeArquivoEstatisticas(FileWriter estatisticas) throws Exception{
+        try{
+            BufferedWriter bufferWriter = new BufferedWriter(estatisticas);
+            bufferWriter.append("Qualis;Qtd. Artigos;Média Artigos / Docente\n");
+            
+            String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
+            for(String q:qualis){
+                int publicacao_qualis = 0;
+                Float arquivos_docente = 0f;
+                for(Publicacao p:this.publicacoes){
+                    if(p.get_veiculo().get_qualis().get_nota().equals(q)){
+                        publicacao_qualis++;
+                        arquivos_docente = arquivos_docente + (float)((1.0)/p.get_autores().size());
                     }
                 }
-                bufferWriter.append("\n");
+                bufferWriter.append(q + ";");
+                bufferWriter.append(publicacao_qualis + ";");
+                bufferWriter.append(String.format("%.2f", arquivos_docente) + "\n");
             }
+            bufferWriter.close();
         }
-        bufferWriter.close();
-    }
-
-    public void imprimeArquivoRecredenciamento(FileWriter recredenciamento) throws Exception{
-        BufferedWriter bufferWriter = new BufferedWriter(recredenciamento);
-        bufferWriter.append("Docente;Pontuação;Recredenciado?\n");
-        this.docentes.sort(docente);
-
-        Regra regra = null;
-        Calendar calendar = new GregorianCalendar();
-        for(Regra r:this.regras){
-            calendar.setTime(r.get_inicioVigencia());
-            int year = calendar.get(Calendar.YEAR);
-            if(year == this.ano) regra = r; break;
+        catch(NullPointerException exception){
+            this.exit = 1;
         }
-        for(Docente d:this.docentes){
-            d.calcula_pontuacao(regra);
-            d.calcula_situacao(this.ano, regra);
-            bufferWriter.append(d.get_nome()+";");
-            bufferWriter.append(String.format("%.1f", d.get_pontuacao())+";");
-            bufferWriter.append(d.get_situacao()+"\n");
-        }
-        bufferWriter.close();
-    }
-    
-    public void imprimeArquivoEstatisticas(FileWriter estatisticas) throws Exception{
-        BufferedWriter bufferWriter = new BufferedWriter(estatisticas);
-        bufferWriter.append("Qualis;Qtd. Artigos;Média Artigos / Docente\n");
-        
-        String[] qualis = {"A1", "A2", "B1", "B2", "B3", "B4", "B5", "C"};
-        for(String q:qualis){
-            int publicacao_qualis = 0;
-            Float arquivos_docente = 0f;
-            for(Publicacao p:this.publicacoes){
-                if(p.get_veiculo().get_qualis().get_nota().equals(q)){
-                    publicacao_qualis++;
-                    arquivos_docente = arquivos_docente + (float)((1.0)/p.get_autores().size());
-                }
-            }
-            bufferWriter.append(q + ";");
-            bufferWriter.append(publicacao_qualis + ";");
-            bufferWriter.append(String.format("%.2f", arquivos_docente) + "\n");
-        }
-        bufferWriter.close();
     }
 
     static Comparator<Publicacao> publicacao = new Comparator<Publicacao>(){
@@ -313,9 +441,7 @@ public class Trabalho implements Serializable{
 
     public static void main(String argv[]) throws Exception {
         Trabalho trabalho = new Trabalho();
-
         FileInputStream docentes = null, veiculos = null, publicacoes = null, qualis = null, regras = null;
-        List<Character> parametros = new ArrayList<Character>();
 
         for(int i=0;i<13;i++){
             if(i == 12 && argv.length == 12) break;
